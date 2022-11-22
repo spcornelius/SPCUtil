@@ -1,6 +1,7 @@
 module SPCUtil
 
 using Distributed
+using Makie
 using SlurmClusterManager
 
 include("./makie.jl")
