@@ -24,4 +24,5 @@ function setup_workers(; kw...)
         LocalManager(n)
     end
     addprocs(mgr, exeflags=exeflags, topology=:master_worker; kw...)
+    return mgr
 end
