@@ -1,8 +1,8 @@
 module SPCUtil
 
 using Distributed
+using Distributed: SSHManager, LocalManager
 using Makie
-using SlurmClusterManager
 
 include("./makie.jl")
 include("./slurm.jl")
