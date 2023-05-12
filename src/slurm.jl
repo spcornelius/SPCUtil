@@ -3,7 +3,6 @@ function setup_workers(; kw...)
     project =  unsafe_string(Base.JLOptions().project)
     exeflags = ["--project=$project", "--sysimage=$sysimage_file"]
 
-
     mgr = if haskey(ENV, "SLURM_JOBID")
         # A kludge. Could use the SlurmManager from either ClusterManagers or
         # SlurmClusterManager, but the NEU discovery cluster disables srun 
@@ -15,7 +14,7 @@ function setup_workers(; kw...)
 
         # get CPUs assigned to each node
         cpus_per_node = [parse(Int64, x) for x in split(ENV["SLURM_TASKS_PER_NODE"], ",")]
-        
+
         machines = collect(zip(nodes, cpus_per_node))
         SSHManager(machines)
     else
