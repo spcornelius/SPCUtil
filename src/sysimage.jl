@@ -2,7 +2,7 @@ import Pkg
 import PackageCompiler
 
 function create_sysimage(; kw...)
-    project_root = dirname(dirname(@__FILE__))
+    project_root = dirname(Base.active_project())
 
     deps = Pkg.dependencies()
 
