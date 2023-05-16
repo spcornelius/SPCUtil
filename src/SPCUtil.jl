@@ -5,13 +5,13 @@ using Distributed: SSHManager, LocalManager
 using Makie
 
 include("./makie.jl")
-include("./slurm.jl")
+include("./distributed.jl")
 include("./sysimage.jl")
 
 # makie.jl
 export align_xlabels!, align_ylabels!
 
-# slurm.jl
+# distributed.jl
 export setup_workers
 
 # sysimage.jl
