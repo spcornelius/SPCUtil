@@ -6,8 +6,19 @@ function _get_manager(::Val{:slurm}; kw...)
     cmd = `scontrol show hostnames $(ENV["SLURM_NODELIST"])`
     nodes = split(readchomp(cmd), "\n")
 
-    # get CPUs assigned to each node
-    cpus_per_node = [parse(Int64, x) for x in split(ENV["SLURM_TASKS_PER_NODE"], ",")]
+    # get number of CPUs assigned to each node
+    tokens = split(ENV["SLURM_TASKS_PER_NODE"], ",")
+    regexp = r"^(\d+)(\(x(\d+)\))?$"
+
+    cpus_per_node = Int[]
+
+    while !isempty(tokens)
+        token = popfirst!(tokens)
+        m = match(regexp, token)
+        count = parse(Int, m[1])
+        repetitions = isnothing(m[3]) ? 1 : parse(Int, m[3])
+        append!(cpus_per_node, repeat([count], repetitions))
+    end
 
     machines = collect(zip(nodes, cpus_per_node))
     return SSHManager(machines)
