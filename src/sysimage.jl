@@ -1,6 +1,8 @@
 import Pkg
 import PackageCompiler
 
+const EXCLUDE = Set(["PyCall", "PyPlot"])
+
 function create_sysimage(; kw...)
     project_root = dirname(Base.active_project())
 
@@ -8,7 +10,8 @@ function create_sysimage(; kw...)
 
     # Only include direct dependencies of project. Also, only include
     # packages from a registry (i.e., exclude github, etc.)
-    pkgs = [Symbol(v.name) for v in values(deps) if v.is_tracking_registry && v.is_direct_dep]
+    pkgs = [Symbol(v.name) for v in values(deps) if 
+            v.is_tracking_registry && v.is_direct_dep && v.name ∉ EXCLUDE]
 
     sysimage_prefix = "JuliaSysimage"
     sysimage_suffix = get(ENV, "JULIA_SYSIMAGE_SUFFIX", "")
