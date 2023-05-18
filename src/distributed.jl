@@ -1,24 +1,34 @@
-_get_manager(::Val{:local}; n::Integer) =
-    LocalManager(n, true)
+# The SLURM_TASKS_PER_NODE environment variable may look like:
+# 8,12(x2),5,4(x3)
+# where each token is either a number or a number plus repetition.
+# Handle both cases with this regexp.
+const CPUS_PER_NODE_REGEXP = r"^(\d+)(\(x(\d+)\))?$"
 
-function _get_manager(::Val{:slurm}; kw...)
-    # get list of all nodes (hostnames)
-    cmd = `scontrol show hostnames $(ENV["SLURM_NODELIST"])`
-    nodes = split(readchomp(cmd), "\n")
+const NODELIST_CMD = `scontrol show hostnames $(ENV["SLURM_NODELIST"])`
 
-    # get number of CPUs assigned to each node
+function _get_slurm_cpus_per_node()
     tokens = split(ENV["SLURM_TASKS_PER_NODE"], ",")
-    regexp = r"^(\d+)(\(x(\d+)\))?$"
 
     cpus_per_node = Int[]
 
     while !isempty(tokens)
         token = popfirst!(tokens)
-        m = match(regexp, token)
+        m = match(CPUS_PER_NODE_REGEXP, token)
         count = parse(Int, m[1])
         repetitions = isnothing(m[3]) ? 1 : parse(Int, m[3])
         append!(cpus_per_node, repeat([count], repetitions))
     end
+
+    return cpus_per_node
+end
+
+_get_manager(::Val{:local}; n::Integer) =
+    LocalManager(n, true)
+
+function _get_manager(::Val{:slurm}; kw...)
+    # get list of all nodes (hostnames) and associated CPU counts
+    nodes = split(readchomp(NODELIST_CMD), "\n")
+    cpus_per_node = _get_slurm_cpus_per_node()
 
     machines = collect(zip(nodes, cpus_per_node))
     return SSHManager(machines)
