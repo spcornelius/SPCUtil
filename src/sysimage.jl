@@ -4,7 +4,7 @@ import PackageCompiler
 const SYSIMAGE_PREFIX = "JuliaSysimage"
 
 # these sometimes cause segfaults
-const EXCLUDE = Set(["PyCall", "PyPlot"])
+const EXCLUDE = Set{String}()
 
 function create_sysimage(; kw...)
     project_root = dirname(Base.active_project())
