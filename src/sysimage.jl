@@ -3,18 +3,17 @@ import PackageCompiler
 
 const SYSIMAGE_PREFIX = "JuliaSysimage"
 
-# these sometimes cause segfaults
-const EXCLUDE = Set{String}()
-
-function create_sysimage(; kw...)
+function create_sysimage(; exclude = Set{String}(), kw...)
     project_root = dirname(Base.active_project())
+
+    exclude = Set(string.(exclude))
 
     deps = Pkg.dependencies()
 
     # Only include direct dependencies of project. Also, only include
     # packages from a registry (i.e., exclude github, etc.)
     pkgs = [Symbol(v.name) for v in values(deps) if 
-            v.is_tracking_registry && v.is_direct_dep && v.name ∉ EXCLUDE]
+            v.is_tracking_registry && v.is_direct_dep && v.name ∉ exclude]
 
     sysimage_suffix = get(ENV, "JULIA_SYSIMAGE_SUFFIX", "")
     if !isempty(sysimage_suffix)
