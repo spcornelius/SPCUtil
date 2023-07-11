@@ -38,7 +38,7 @@ function _get_manager(::Val{:auto}; kw...)
     return _get_manager(mode; kw...)
 end
 
-_get_manager(mode::Symbol; kw...) = _get_manager(Val(mode); kw...)
+_get_manager(mode::Symbol, args...; kw...) = _get_manager(Val(mode), args...; kw...)
 
 function setup_workers(mode = :auto; 
                        n = length(Sys.cpu_info()),
