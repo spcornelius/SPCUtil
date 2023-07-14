@@ -1,3 +1,5 @@
+export setup_workers
+
 # The SLURM_TASKS_PER_NODE environment variable may look like:
 # 8,12(x2),5,4(x3)
 # where each token is either a number or a number plus repetition.

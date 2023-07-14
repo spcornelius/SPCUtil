@@ -1,3 +1,5 @@
+export @once_then
+
 macro once_then(expr::Expr)
     @assert expr.head == :while
     esc(quote

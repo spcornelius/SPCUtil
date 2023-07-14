@@ -1,3 +1,5 @@
+export align_xlabels!, align_ylabels!
+
 function align_xlabels!(axs...)
     xspace = maximum(tight_xticklabel_spacing!, axs)
     for ax in axs

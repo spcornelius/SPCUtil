@@ -1,5 +1,4 @@
-import Pkg
-import PackageCompiler
+export create_sysimage
 
 const SYSIMAGE_PREFIX = "JuliaSysimage"
 
